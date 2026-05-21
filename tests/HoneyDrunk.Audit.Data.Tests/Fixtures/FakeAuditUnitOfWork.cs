@@ -17,12 +17,10 @@ internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.Au
     public IRepository<TEntity> Repository<TEntity>()
         where TEntity : class
     {
-        if (typeof(TEntity) == typeof(HoneyDrunk.Audit.Data.AuditRecord))
+        if (typeof(TEntity) == typeof(HoneyDrunk.Audit.Data.AuditRecord) &&
+            _repository is IRepository<TEntity> repository)
         {
-            if (_repository is IRepository<TEntity> repository)
-            {
-                return repository;
-            }
+            return repository;
         }
 
         throw new NotSupportedException(typeof(TEntity).FullName);
