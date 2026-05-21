@@ -16,6 +16,8 @@ public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : I
         AuditQueryFilter filter,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(filter);
+
         if (filter.Until < filter.Since)
         {
             throw new ArgumentException("Until must be greater than or equal to Since.", nameof(filter));

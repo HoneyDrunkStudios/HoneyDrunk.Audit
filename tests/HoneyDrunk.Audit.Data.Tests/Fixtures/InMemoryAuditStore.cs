@@ -1,4 +1,3 @@
-using Xunit;
 using HoneyDrunk.Audit.Abstractions;
 
 namespace HoneyDrunk.Audit.Data.Tests.Fixtures;
