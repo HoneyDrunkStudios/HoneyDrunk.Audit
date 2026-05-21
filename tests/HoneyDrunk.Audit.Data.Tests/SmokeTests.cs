@@ -27,14 +27,14 @@ public sealed class SmokeTests
             "corr-1",
             AuditOperation.Update,
             [new AuditChange("Email", Redacted: true)],
-            new Dictionary<string, string> { ["source"] = "smoke" }));
+            new Dictionary<string, string> { ["source"] = "smoke" }), TestContext.Current.CancellationToken);
 
         var results = await query.ReadAsync(new AuditQueryFilter(
             now.AddMinutes(-1),
             now.AddMinutes(1),
             Category: AuditCategory.DataChange,
             TargetType: "Customer",
-            TargetId: "customer-1"));
+            TargetId: "customer-1"), TestContext.Current.CancellationToken);
 
         var entry = Assert.Single(results);
         Assert.False(entry.Id.IsEmpty);

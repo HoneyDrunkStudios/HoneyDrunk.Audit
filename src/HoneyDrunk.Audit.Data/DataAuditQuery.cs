@@ -1,5 +1,6 @@
 using HoneyDrunk.Audit.Abstractions;
 using HoneyDrunk.Data.Abstractions.Transactions;
+using System.Linq.Expressions;
 
 namespace HoneyDrunk.Audit.Data;
 
@@ -21,15 +22,7 @@ public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : I
         }
 
         var records = await _unitOfWork.Repository<AuditRecord>().FindAsync(
-            record => record.OccurredAt >= filter.Since &&
-                record.OccurredAt <= filter.Until &&
-                (filter.Actor == null || record.Actor == filter.Actor) &&
-                (filter.Category == null || record.Category == filter.Category.Value) &&
-                (filter.EventName == null || record.EventName == filter.EventName) &&
-                (filter.TargetType == null || record.TargetType == filter.TargetType) &&
-                (filter.TargetId == null || record.TargetId == filter.TargetId) &&
-                (filter.CorrelationId == null || record.CorrelationId == filter.CorrelationId) &&
-                (filter.TenantId == null || record.TenantId == filter.TenantId.Value.ToString()),
+            BuildFilterExpression(filter),
             cancellationToken).ConfigureAwait(false);
 
         var ordered = records
@@ -43,5 +36,61 @@ public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : I
         }
 
         return ordered.ToArray();
+    }
+
+    private static Expression<Func<AuditRecord, bool>> BuildFilterExpression(AuditQueryFilter filter)
+    {
+        var record = Expression.Parameter(typeof(AuditRecord), "record");
+        Expression body = Expression.Constant(true);
+
+        body = And(body, GreaterThanOrEqual(record, nameof(AuditRecord.OccurredAt), filter.Since));
+        body = And(body, LessThanOrEqual(record, nameof(AuditRecord.OccurredAt), filter.Until));
+        body = AndIfValue(body, record, nameof(AuditRecord.Actor), filter.Actor);
+        body = AndIfValue(body, record, nameof(AuditRecord.Category), filter.Category);
+        body = AndIfValue(body, record, nameof(AuditRecord.EventName), filter.EventName);
+        body = AndIfValue(body, record, nameof(AuditRecord.TargetType), filter.TargetType);
+        body = AndIfValue(body, record, nameof(AuditRecord.TargetId), filter.TargetId);
+        body = AndIfValue(body, record, nameof(AuditRecord.CorrelationId), filter.CorrelationId);
+        body = AndIfValue(body, record, nameof(AuditRecord.TenantId), filter.TenantId?.ToString());
+
+        return Expression.Lambda<Func<AuditRecord, bool>>(body, record);
+    }
+
+    private static Expression And(Expression left, Expression right) => Expression.AndAlso(left, right);
+
+    private static Expression GreaterThanOrEqual<TValue>(
+        Expression instance,
+        string propertyName,
+        TValue value)
+    {
+        return Expression.GreaterThanOrEqual(
+            Expression.Property(instance, propertyName),
+            Expression.Constant(value, typeof(TValue)));
+    }
+
+    private static Expression LessThanOrEqual<TValue>(
+        Expression instance,
+        string propertyName,
+        TValue value)
+    {
+        return Expression.LessThanOrEqual(
+            Expression.Property(instance, propertyName),
+            Expression.Constant(value, typeof(TValue)));
+    }
+
+    private static Expression AndIfValue<TValue>(
+        Expression current,
+        Expression instance,
+        string propertyName,
+        TValue? value)
+    {
+        if (value is null)
+        {
+            return current;
+        }
+
+        var property = Expression.Property(instance, propertyName);
+        var constant = Expression.Constant(value, property.Type);
+        return And(current, Expression.Equal(property, constant));
     }
 }

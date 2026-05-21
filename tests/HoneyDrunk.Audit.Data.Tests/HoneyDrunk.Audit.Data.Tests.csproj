@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><IsPackable>false</IsPackable><RunAnalyzers>false</RunAnalyzers><NoWarn>$(NoWarn);SA1402;SA1505;SA1512;SA1515;SA1518;SA1600;SA1611;SA1615;SA1623</NoWarn></PropertyGroup>
+  <PropertyGroup><IsPackable>false</IsPackable><RunAnalyzers>false</RunAnalyzers><NoWarn>$(NoWarn);CA2000;IDE0005;SA1027;SA1116;SA1117;SA1210;SA1402;SA1505;SA1512;SA1515;SA1518;SA1600;SA1611;SA1615;SA1623;xUnit1051</NoWarn></PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\HoneyDrunk.Audit.Data\HoneyDrunk.Audit.Data.csproj" />
     <ProjectReference Include="..\..\src\HoneyDrunk.Audit.Abstractions\HoneyDrunk.Audit.Abstractions.csproj" />
