@@ -1,4 +1,3 @@
-using Xunit;
 using System.Linq.Expressions;
 using HoneyDrunk.Data.Abstractions.Repositories;
 using HoneyDrunk.Data.Abstractions.Transactions;
@@ -20,7 +19,10 @@ internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.Au
     {
         if (typeof(TEntity) == typeof(HoneyDrunk.Audit.Data.AuditRecord))
         {
-            return (IRepository<TEntity>)(object)_repository;
+            if (_repository is IRepository<TEntity> repository)
+            {
+                return repository;
+            }
         }
 
         throw new NotSupportedException(typeof(TEntity).FullName);
