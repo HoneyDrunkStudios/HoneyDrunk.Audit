@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HoneyDrunk.Audit.Abstractions/HoneyDrunk.Audit.Abstractions.csproj" />
+    <Project Path="src/HoneyDrunk.Audit.Data/HoneyDrunk.Audit.Data.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HoneyDrunk.Audit.Abstractions.Tests/HoneyDrunk.Audit.Abstractions.Tests.csproj" />
+    <Project Path="tests/HoneyDrunk.Audit.Data.Tests/HoneyDrunk.Audit.Data.Tests.csproj" />
+  </Folder>
+</Solution>
