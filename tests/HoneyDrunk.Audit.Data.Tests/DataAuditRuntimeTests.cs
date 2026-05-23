@@ -16,7 +16,7 @@ public sealed class DataAuditRuntimeTests
 
         await log.AppendAsync(
             NewEntry(DateTimeOffset.MinValue, "login.succeeded"),
-            TestContext.Current.CancellationToken);
+            CancellationToken.None);
 
         var record = Assert.Single(unitOfWork.Records);
         Assert.False(string.IsNullOrWhiteSpace(record.Id));
@@ -35,13 +35,13 @@ public sealed class DataAuditRuntimeTests
 
         await log.AppendAsync(
             NewEntry(now.AddMinutes(2), "ignored", targetId: "other"),
-            TestContext.Current.CancellationToken);
+            CancellationToken.None);
         await log.AppendAsync(
             NewEntry(now, "first", targetId: "customer-1"),
-            TestContext.Current.CancellationToken);
+            CancellationToken.None);
         await log.AppendAsync(
             NewEntry(now.AddMinutes(1), "second", targetId: "customer-1"),
-            TestContext.Current.CancellationToken);
+            CancellationToken.None);
 
         var results = await query.ReadAsync(
             new AuditQueryFilter(
@@ -55,7 +55,7 @@ public sealed class DataAuditRuntimeTests
                 CorrelationId: "corr-1",
                 TenantId: TenantId.Internal,
                 Limit: 1),
-            TestContext.Current.CancellationToken);
+            CancellationToken.None);
 
         var entry = Assert.Single(results);
         Assert.Equal("first", entry.EventName);
@@ -71,7 +71,7 @@ public sealed class DataAuditRuntimeTests
         await Assert.ThrowsAsync<ArgumentException>(
             () => query.ReadAsync(
                 new AuditQueryFilter(now, now.AddSeconds(-1)),
-                TestContext.Current.CancellationToken));
+                CancellationToken.None));
     }
 
     private static AuditEntry NewEntry(
