@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HoneyDrunk.Kernel.Abstractions" Version="0.7.0" />
-    <PackageReference Include="HoneyDrunk.Standards" Version="0.2.7" PrivateAssets="all" />
+    <PackageReference Include="HoneyDrunk.Standards" Version="0.2.9" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />

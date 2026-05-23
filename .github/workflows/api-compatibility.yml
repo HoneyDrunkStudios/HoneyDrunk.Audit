@@ -18,5 +18,4 @@ jobs:
     with:
       dotnet-version: '10.0.x'
       project-path: './src/HoneyDrunk.Audit.Abstractions/HoneyDrunk.Audit.Abstractions.csproj'
-      package-id: 'HoneyDrunk.Audit.Abstractions'
       actions-ref: 'main'

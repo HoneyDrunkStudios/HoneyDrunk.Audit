@@ -15,14 +15,14 @@ public sealed class DataAuditQueryTests
         IAuditQuery query = new InMemoryAuditQuery(store);
         var now = DateTimeOffset.UtcNow;
 
-        await log.AppendAsync(NewEntry(now.AddMinutes(2), "third"), TestContext.Current.CancellationToken);
-        await log.AppendAsync(NewEntry(now, "first"), TestContext.Current.CancellationToken);
-        await log.AppendAsync(NewEntry(now.AddMinutes(1), "second"), TestContext.Current.CancellationToken);
+        await log.AppendAsync(NewEntry(now.AddMinutes(2), "third"), CancellationToken.None);
+        await log.AppendAsync(NewEntry(now, "first"), CancellationToken.None);
+        await log.AppendAsync(NewEntry(now.AddMinutes(1), "second"), CancellationToken.None);
 
         var results = await query.ReadAsync(new AuditQueryFilter(
             now.AddMinutes(-1),
             now.AddMinutes(3),
-            Limit: 2), TestContext.Current.CancellationToken);
+            Limit: 2), CancellationToken.None);
 
         Assert.Equal(["first", "second"], results.Select(entry => entry.EventName).ToArray());
     }
