@@ -7,9 +7,9 @@ namespace HoneyDrunk.Audit.Data;
 /// <summary>
 /// HoneyDrunk.Data-backed forensic audit reader.
 /// </summary>
-public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : IAuditQuery
+public sealed class DataAuditQuery(IUnitOfWork<IAuditDataContext> unitOfWork) : IAuditQuery
 {
-    private readonly IUnitOfWork<AuditDataContext> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    private readonly IUnitOfWork<IAuditDataContext> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
     /// <inheritdoc />
     public async Task<IReadOnlyList<AuditEntry>> ReadAsync(

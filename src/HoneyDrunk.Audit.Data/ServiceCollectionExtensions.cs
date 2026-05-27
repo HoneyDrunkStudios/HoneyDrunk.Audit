@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Registers the Data-backed Audit runtime services. The host must also compose
-    /// <c>IUnitOfWork&lt;AuditDataContext&gt;</c> through HoneyDrunk.Data.
+    /// <c>IUnitOfWork&lt;IAuditDataContext&gt;</c> through HoneyDrunk.Data.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <returns>The same service collection.</returns>

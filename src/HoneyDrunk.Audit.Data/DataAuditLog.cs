@@ -8,10 +8,10 @@ namespace HoneyDrunk.Audit.Data;
 /// HoneyDrunk.Data-backed append-only audit writer.
 /// </summary>
 public sealed partial class DataAuditLog(
-    IUnitOfWork<AuditDataContext> unitOfWork,
+    IUnitOfWork<IAuditDataContext> unitOfWork,
     ILogger<DataAuditLog> logger) : IAuditLog
 {
-    private readonly IUnitOfWork<AuditDataContext> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+    private readonly IUnitOfWork<IAuditDataContext> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     private readonly ILogger<DataAuditLog> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     /// <inheritdoc />

@@ -4,7 +4,7 @@ using HoneyDrunk.Data.Abstractions.Transactions;
 
 namespace HoneyDrunk.Audit.Data.Tests.Fixtures;
 
-internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.AuditDataContext>
+internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.IAuditDataContext>
 {
     private readonly FakeAuditRecordRepository _repository = new();
 

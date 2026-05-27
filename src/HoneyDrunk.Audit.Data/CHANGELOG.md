@@ -6,7 +6,7 @@
 
 ### Changed (breaking)
 
-- **`AuditDataContext` is now an `abstract class`** (was `sealed` with a `private` constructor; Sonar S3453). The type is a marker used only as a generic type argument for `IUnitOfWork<T>` — abstract gives the same "don't instantiate" signal without the suspicious shape.
+- **`AuditDataContext` (class) replaced by `IAuditDataContext` (interface).** Marker type for `IUnitOfWork<T>` composition — Sonar wanted the original `sealed`+`private` ctor form replaced (S3453); the interim `abstract class` form then tripped S2094 ("empty class → use interface"). Interface is the right shape for a phantom marker, and `IUnitOfWork<T>` has no `class` constraint so it composes cleanly. Consumers that referenced `AuditDataContext` directly must update the type + usings.
 - **`DataAuditLog` is now `sealed partial class`** so the new source-generated `[LoggerMessage]` partial method can attach. Source-compatible for callers; binary metadata change.
 
 ### Changed

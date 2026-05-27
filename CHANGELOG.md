@@ -6,7 +6,7 @@
 
 ### Changed (breaking)
 
-- **`AuditDataContext` is now an `abstract class`** (was `sealed` with a `private` constructor; Sonar S3453 — "this class can't be instantiated"). It exists only as a generic type argument for `IUnitOfWork<T>`, so abstract is the correct shape: still un-instantiable, no suspicious shape, no need for a hidden ctor.
+- **`AuditDataContext` (class) replaced by `IAuditDataContext` (interface).** The type exists only as a generic type argument for `IUnitOfWork<T>` to discriminate Audit's persistence boundary; the original `sealed` + `private` ctor form tripped Sonar S3453 ("can't be instantiated"), the interim `abstract class` form tripped S2094 ("remove this empty class, write its code or make it an interface"). Interface is the canonical empty-marker shape and `IUnitOfWork<T>` has no `class` constraint, so it composes cleanly. Consumers that referenced `AuditDataContext` directly must update the type + usings.
 - **`DataAuditLog` is now `sealed partial class`** so the new source-generated `[LoggerMessage]` partial method can attach. Source-compatible for callers but a binary metadata change.
 - **Package versions bumped** to `HoneyDrunk.Audit* 0.2.0` per pre-1.0 semver.
 
