@@ -5,41 +5,26 @@ on:
     - cron: '45 3 * * 1'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   preflight:
     name: Workflow preflight
-    runs-on: ubuntu-latest
     permissions:
       contents: read
-    outputs:
-      solution-exists: ${{ steps.detect.outputs.solution-exists }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Detect solution scaffold
-        id: detect
-        shell: bash
-        run: |
-          if [[ -f './HoneyDrunk.Audit.slnx' ]]; then
-            echo 'solution-exists=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'solution-exists=false' >> "$GITHUB_OUTPUT"
-            echo 'No ./HoneyDrunk.Audit.slnx found yet; skipping scheduled .NET dependency scan until the repo scaffold lands.' >> "$GITHUB_STEP_SUMMARY"
-          fi
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-solution-preflight.yml@main
+    with:
+      runs-on: 'ubuntu-latest'
+      project-path: './HoneyDrunk.Audit.slnx'
+      missing-message: 'No ./HoneyDrunk.Audit.slnx found yet; skipping scheduled .NET dependency scan until the repo scaffold lands.'
 
   weekly-deps:
     name: Weekly Dependencies
     needs: preflight
-    if: needs.preflight.outputs.solution-exists == 'true'
+    if: needs.preflight.outputs['project-exists'] == 'true'
     permissions:
-      # contents: write + pull-requests: write — create-update-prs opens PRs
       contents: write
       pull-requests: write
-      # issues: write — weekly-deps action opens tracking issues for findings
       issues: write
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/nightly-deps.yml@main
     with:

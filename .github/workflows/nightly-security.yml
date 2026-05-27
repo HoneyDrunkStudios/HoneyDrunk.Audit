@@ -5,41 +5,26 @@ on:
     - cron: '45 2 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   preflight:
     name: Workflow preflight
-    runs-on: ubuntu-latest
     permissions:
       contents: read
-    outputs:
-      solution-exists: ${{ steps.detect.outputs.solution-exists }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Detect solution scaffold
-        id: detect
-        shell: bash
-        run: |
-          if [[ -f './HoneyDrunk.Audit.slnx' ]]; then
-            echo 'solution-exists=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'solution-exists=false' >> "$GITHUB_OUTPUT"
-            echo 'No ./HoneyDrunk.Audit.slnx found yet; skipping scheduled .NET security scan until the repo scaffold lands.' >> "$GITHUB_STEP_SUMMARY"
-          fi
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-solution-preflight.yml@main
+    with:
+      runs-on: 'ubuntu-latest'
+      project-path: './HoneyDrunk.Audit.slnx'
+      missing-message: 'No ./HoneyDrunk.Audit.slnx found yet; skipping scheduled .NET security scan until the repo scaffold lands.'
 
   nightly-security:
     name: Nightly Security
     needs: preflight
-    if: needs.preflight.outputs.solution-exists == 'true'
+    if: needs.preflight.outputs['project-exists'] == 'true'
     permissions:
       contents: read
-      # security-events: write — SAST findings uploaded to Code Scanning
       security-events: write
-      # issues: write — create-issues input opens GitHub issues for new findings
       issues: write
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/nightly-security.yml@main
     with:
