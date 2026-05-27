@@ -70,8 +70,8 @@ public sealed class AuditRecord
         CorrelationId = entry.CorrelationId,
         Operation = entry.Operation,
         Reason = entry.Reason,
-        ChangesJson = System.Text.Json.JsonSerializer.Serialize(entry.Changes ?? (IReadOnlyList<AuditChange>)[]),
-        MetadataJson = System.Text.Json.JsonSerializer.Serialize(entry.Metadata ?? (IReadOnlyDictionary<string, string>)new Dictionary<string, string>()),
+        ChangesJson = System.Text.Json.JsonSerializer.Serialize(entry.Changes ?? []),
+        MetadataJson = System.Text.Json.JsonSerializer.Serialize(entry.Metadata ?? new Dictionary<string, string>()),
     };
 
     /// <summary>Converts this persistence record back to a contract entry.</summary>
