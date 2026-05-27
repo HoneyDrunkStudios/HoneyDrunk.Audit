@@ -6,7 +6,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="HoneyDrunk.Kernel.Abstractions" Version="0.7.0" />
+    <PackageReference Include="HoneyDrunk.Kernel.Abstractions" Version="0.8.0" />
     <PackageReference Include="HoneyDrunk.Standards" Version="0.2.9" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>

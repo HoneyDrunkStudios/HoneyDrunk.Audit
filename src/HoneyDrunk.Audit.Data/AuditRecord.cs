@@ -70,7 +70,7 @@ public sealed class AuditRecord
         CorrelationId = entry.CorrelationId,
         Operation = entry.Operation,
         Reason = entry.Reason,
-        ChangesJson = System.Text.Json.JsonSerializer.Serialize(entry.Changes ?? Array.Empty<AuditChange>()),
+        ChangesJson = System.Text.Json.JsonSerializer.Serialize(entry.Changes ?? []),
         MetadataJson = System.Text.Json.JsonSerializer.Serialize(entry.Metadata ?? new Dictionary<string, string>()),
     };
 
@@ -87,7 +87,7 @@ public sealed class AuditRecord
         HoneyDrunk.Kernel.Abstractions.Identity.TenantId.TryParse(TenantId, out var tenantId) ? tenantId : HoneyDrunk.Kernel.Abstractions.Identity.TenantId.Internal,
         CorrelationId,
         Operation,
-        System.Text.Json.JsonSerializer.Deserialize<IReadOnlyList<AuditChange>>(ChangesJson) ?? Array.Empty<AuditChange>(),
+        System.Text.Json.JsonSerializer.Deserialize<IReadOnlyList<AuditChange>>(ChangesJson) ?? [],
         System.Text.Json.JsonSerializer.Deserialize<IReadOnlyDictionary<string, string>>(MetadataJson) ?? new Dictionary<string, string>(),
         Reason);
 }

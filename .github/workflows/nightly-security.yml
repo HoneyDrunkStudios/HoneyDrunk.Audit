@@ -5,10 +5,7 @@ on:
     - cron: '45 2 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  security-events: write
-  issues: write
+permissions: {}
 
 jobs:
   preflight:
@@ -24,7 +21,11 @@ jobs:
   nightly-security:
     name: Nightly Security
     needs: preflight
-    if: needs.preflight.outputs.project-exists == 'true'
+    if: needs.preflight.outputs['project-exists'] == 'true'
+    permissions:
+      contents: read
+      security-events: write
+      issues: write
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/nightly-security.yml@main
     with:
       dotnet-version: '10.0.x'

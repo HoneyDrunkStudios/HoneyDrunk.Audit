@@ -29,6 +29,6 @@ internal sealed class InMemoryAuditStore
             query = query.Take(filter.Limit.Value);
         }
 
-        return query.ToArray();
+        return [.. query];
     }
 }

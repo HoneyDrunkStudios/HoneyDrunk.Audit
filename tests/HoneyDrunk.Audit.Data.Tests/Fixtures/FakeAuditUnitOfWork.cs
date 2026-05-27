@@ -4,7 +4,7 @@ using HoneyDrunk.Data.Abstractions.Transactions;
 
 namespace HoneyDrunk.Audit.Data.Tests.Fixtures;
 
-internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.AuditDataContext>
+internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.IAuditDataContext>
 {
     private readonly FakeAuditRecordRepository _repository = new();
 
@@ -74,7 +74,7 @@ internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.Au
         {
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult<IReadOnlyList<HoneyDrunk.Audit.Data.AuditRecord>>(
-                _records.Where(predicate.Compile()).ToArray());
+                [.. _records.Where(predicate.Compile())]);
         }
 
         public Task<HoneyDrunk.Audit.Data.AuditRecord?> FindOneAsync(
