@@ -37,7 +37,7 @@ public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : I
             ordered = ordered.Take(filter.Limit.Value);
         }
 
-        return ordered.ToArray();
+        return [.. ordered];
     }
 
     private static Expression<Func<AuditRecord, bool>> BuildFilterExpression(AuditQueryFilter filter)
@@ -58,9 +58,9 @@ public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : I
         return Expression.Lambda<Func<AuditRecord, bool>>(body, record);
     }
 
-    private static Expression And(Expression left, Expression right) => Expression.AndAlso(left, right);
+    private static BinaryExpression And(Expression left, Expression right) => Expression.AndAlso(left, right);
 
-    private static Expression GreaterThanOrEqual<TValue>(
+    private static BinaryExpression GreaterThanOrEqual<TValue>(
         Expression instance,
         string propertyName,
         TValue value)
@@ -70,7 +70,7 @@ public sealed class DataAuditQuery(IUnitOfWork<AuditDataContext> unitOfWork) : I
             Expression.Constant(value, typeof(TValue)));
     }
 
-    private static Expression LessThanOrEqual<TValue>(
+    private static BinaryExpression LessThanOrEqual<TValue>(
         Expression instance,
         string propertyName,
         TValue value)

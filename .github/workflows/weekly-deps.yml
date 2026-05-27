@@ -6,14 +6,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
 
 jobs:
   preflight:
     name: Workflow preflight
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       solution-exists: ${{ steps.detect.outputs.solution-exists }}
     steps:
@@ -35,6 +35,12 @@ jobs:
     name: Weekly Dependencies
     needs: preflight
     if: needs.preflight.outputs.solution-exists == 'true'
+    permissions:
+      # contents: write + pull-requests: write — create-update-prs opens PRs
+      contents: write
+      pull-requests: write
+      # issues: write — weekly-deps action opens tracking issues for findings
+      issues: write
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/nightly-deps.yml@main
     with:
       dotnet-version: '10.0.x'

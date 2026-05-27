@@ -29,9 +29,9 @@ public sealed record AuditEntry(
     {
         Id = Id.IsEmpty ? AuditEntryId.New() : Id,
         OccurredAt = OccurredAt == default ? clock : OccurredAt,
-        Changes = Changes?.ToArray() ?? Array.Empty<AuditChange>(),
+        Changes = Changes?.ToArray() ?? [],
         Metadata = Metadata is null
-            ? new Dictionary<string, string>()
+            ? []
             : new Dictionary<string, string>(Metadata, StringComparer.Ordinal),
     };
 }

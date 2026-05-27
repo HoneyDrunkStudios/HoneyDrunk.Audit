@@ -11,8 +11,8 @@ public sealed class DataAuditQueryTests
     public async Task ReadAsync_ReturnsEntriesInTimeOrderAndAppliesLimit()
     {
         var store = new InMemoryAuditStore();
-        IAuditLog log = new InMemoryAuditLog(store);
-        IAuditQuery query = new InMemoryAuditQuery(store);
+        var log = new InMemoryAuditLog(store);
+        var query = new InMemoryAuditQuery(store);
         var now = DateTimeOffset.UtcNow;
 
         await log.AppendAsync(NewEntry(now.AddMinutes(2), "third"), CancellationToken.None);
@@ -24,7 +24,7 @@ public sealed class DataAuditQueryTests
             now.AddMinutes(3),
             Limit: 2), CancellationToken.None);
 
-        Assert.Equal(["first", "second"], results.Select(entry => entry.EventName).ToArray());
+        Assert.Equal(["first", "second"], [.. results.Select(entry => entry.EventName)]);
     }
 
     private static AuditEntry NewEntry(DateTimeOffset occurredAt, string eventName) => new(

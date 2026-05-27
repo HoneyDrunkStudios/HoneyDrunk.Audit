@@ -11,8 +11,8 @@ public sealed class SmokeTests
     public async Task WriteThroughAuditLog_ReadsBackThroughAuditQuery()
     {
         var store = new InMemoryAuditStore();
-        IAuditLog log = new InMemoryAuditLog(store);
-        IAuditQuery query = new InMemoryAuditQuery(store);
+        var log = new InMemoryAuditLog(store);
+        var query = new InMemoryAuditQuery(store);
         var now = DateTimeOffset.UtcNow;
 
         await log.AppendAsync(new AuditEntry(

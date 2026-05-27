@@ -13,13 +13,13 @@ on:
 
 permissions:
   contents: read
-  packages: write
-  id-token: write
 
 jobs:
   preflight:
     name: Workflow preflight
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       solution-exists: ${{ steps.detect.outputs.solution-exists }}
       version: ${{ steps.version.outputs.version }}

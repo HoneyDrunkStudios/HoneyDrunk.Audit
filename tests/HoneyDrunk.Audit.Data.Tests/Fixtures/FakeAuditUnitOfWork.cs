@@ -74,7 +74,7 @@ internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.Au
         {
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult<IReadOnlyList<HoneyDrunk.Audit.Data.AuditRecord>>(
-                _records.Where(predicate.Compile()).ToArray());
+                [.. _records.Where(predicate.Compile())]);
         }
 
         public Task<HoneyDrunk.Audit.Data.AuditRecord?> FindOneAsync(

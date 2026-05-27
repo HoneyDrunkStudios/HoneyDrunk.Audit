@@ -7,13 +7,13 @@ on:
 
 permissions:
   contents: read
-  security-events: write
-  issues: write
 
 jobs:
   preflight:
     name: Workflow preflight
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       solution-exists: ${{ steps.detect.outputs.solution-exists }}
     steps:
@@ -35,6 +35,12 @@ jobs:
     name: Nightly Security
     needs: preflight
     if: needs.preflight.outputs.solution-exists == 'true'
+    permissions:
+      contents: read
+      # security-events: write — SAST findings uploaded to Code Scanning
+      security-events: write
+      # issues: write — create-issues input opens GitHub issues for new findings
+      issues: write
     uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/nightly-security.yml@main
     with:
       dotnet-version: '10.0.x'
