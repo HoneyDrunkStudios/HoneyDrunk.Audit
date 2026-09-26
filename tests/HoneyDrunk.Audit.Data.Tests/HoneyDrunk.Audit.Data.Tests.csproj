@@ -5,9 +5,9 @@
     <ProjectReference Include="..\..\src\HoneyDrunk.Audit.Abstractions\HoneyDrunk.Audit.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HoneyDrunk.Standards" Version="0.2.9" PrivateAssets="all" />
-    <PackageReference Include="HoneyDrunk.Standards.Tests" Version="0.2.9" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
+    <PackageReference Include="HoneyDrunk.Standards" Version="0.3.0" PrivateAssets="all" />
+    <PackageReference Include="HoneyDrunk.Standards.Tests" Version="0.3.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
   </ItemGroup>
 </Project>
