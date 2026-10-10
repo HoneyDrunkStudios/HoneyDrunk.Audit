@@ -19,3 +19,11 @@ dotnet test HoneyDrunk.Audit.slnx -c Release --no-build
 ```
 
 Use the checked-in workflow and relevant test documentation for additional integration prerequisites, coverage and consumer checks. Do not use live resources or credentials merely to make a local check pass.
+
+## Code Review Rules
+
+Apply the [shared review criteria](https://github.com/HoneyDrunkStudios/HoneyDrunk.Standards/blob/main/HoneyDrunk.Standards/docs/CONVENTIONS.md#code-review) to changed behavior, using the repository boundaries above. Report actionable findings with the failing path, concrete impact and a small corrective action; disclose unavailable evidence. These rules grant no cross-repository access or merge authority.
+
+- Preserve attributable canonical audit history through the existing IAuditLog/IAuditQuery contracts. Keep shared schema/storage policy here; Pulse telemetry and delivery logs are not substitute audit records.
+- Trace actor/tenant/context attribution, append-only behavior, retry and partial persistence failure. Flag history rewriting, missing records masked as success, cross-tenant reads or sensitive payload disclosure; bound audit queries and retention work.
+- Require contract, attribution, persistence and replay/failure tests for changed behavior. Check schema compatibility and actual shared ownership without imposing product outcomes on the audit layer or claiming durability from an in-memory test alone.
