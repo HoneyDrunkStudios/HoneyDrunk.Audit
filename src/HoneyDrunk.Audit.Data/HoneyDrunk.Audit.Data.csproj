@@ -9,11 +9,11 @@
     <ProjectReference Include="..\HoneyDrunk.Audit.Abstractions\HoneyDrunk.Audit.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HoneyDrunk.Data.Abstractions" Version="0.7.1" />
-    <PackageReference Include="HoneyDrunk.Standards" Version="0.3.0" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.12" />
+    <PackageReference Include="HoneyDrunk.Data.Abstractions" Version="0.7.2" />
+    <PackageReference Include="HoneyDrunk.Standards" Version="0.4.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.14" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
