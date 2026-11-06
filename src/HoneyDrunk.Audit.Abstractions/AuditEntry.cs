@@ -5,6 +5,19 @@ namespace HoneyDrunk.Audit.Abstractions;
 /// <summary>
 /// Canonical durable audit envelope for attributable Grid events.
 /// </summary>
+/// <param name="Id">The durable audit entry identifier; empty before the writer assigns it.</param>
+/// <param name="OccurredAt">The event timestamp, normalized by the writer when absent.</param>
+/// <param name="Actor">The attributable actor identifier.</param>
+/// <param name="EventName">The application event name.</param>
+/// <param name="Category">The audit event category.</param>
+/// <param name="Outcome">The event outcome.</param>
+/// <param name="Target">The resource addressed by the event.</param>
+/// <param name="TenantId">The tenant that owns this operation.</param>
+/// <param name="CorrelationId">The optional operation correlation identifier.</param>
+/// <param name="Operation">The audited operation classification.</param>
+/// <param name="Changes">The optional recorded field changes.</param>
+/// <param name="Metadata">The optional event metadata; exclude secrets.</param>
+/// <param name="Reason">The optional human-readable result reason.</param>
 public sealed record AuditEntry(
     AuditEntryId Id,
     DateTimeOffset OccurredAt,

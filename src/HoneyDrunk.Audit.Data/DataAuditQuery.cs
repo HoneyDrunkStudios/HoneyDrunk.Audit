@@ -7,6 +7,7 @@ namespace HoneyDrunk.Audit.Data;
 /// <summary>
 /// HoneyDrunk.Data-backed forensic audit reader.
 /// </summary>
+/// <param name="unitOfWork">The scoped unit of work used for audit persistence.</param>
 public sealed class DataAuditQuery(IUnitOfWork<IAuditDataContext> unitOfWork) : IAuditQuery
 {
     private readonly IUnitOfWork<IAuditDataContext> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
