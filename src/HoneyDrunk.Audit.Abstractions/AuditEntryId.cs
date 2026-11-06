@@ -3,6 +3,7 @@ namespace HoneyDrunk.Audit.Abstractions;
 /// <summary>
 /// Strongly typed identifier for an appended audit entry.
 /// </summary>
+/// <param name="Value">The durable audit entry identifier value.</param>
 public readonly record struct AuditEntryId(string Value)
 {
     /// <summary>Gets the empty identifier used before append assigns a durable id.</summary>

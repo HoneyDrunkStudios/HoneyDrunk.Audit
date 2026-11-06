@@ -7,6 +7,8 @@ namespace HoneyDrunk.Audit.Data;
 /// <summary>
 /// HoneyDrunk.Data-backed append-only audit writer.
 /// </summary>
+/// <param name="unitOfWork">The scoped unit of work used for audit persistence.</param>
+/// <param name="logger">The logger for this component.</param>
 public sealed partial class DataAuditLog(
     IUnitOfWork<IAuditDataContext> unitOfWork,
     ILogger<DataAuditLog> logger) : IAuditLog
