@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0] - 2026-11-11
+
+### Added
+
+- Optional `IBoundedAuditQuery.ReadLatestAsync` capability for newest-first audit reads with a required positive limit. Existing `IAuditQuery` and `AuditQueryFilter` constructor/deconstruction signatures remain unchanged.
+- Real SQLite tests for filtering, inclusive windows, ties, source limits and insert-boundary behavior; SQL Server compatibility-150 query-translation tests; explicit legacy-provider rejection and API compatibility checks.
+
+### Changed
+
+- Positive-limit Data-backed reads apply ordering and limit at the persistence source before materializing the flat audit records. Bounded reads require Data 0.8.0's `IBoundedReadOnlyRepository<AuditRecord>` capability and fail explicitly when unsupported.
+- Earliest-first defaults and historical unbounded null/zero/negative-limit reads remain available through `IAuditQuery.ReadAsync`; bounded consumers must opt into the new capability.
+- Runtime packages require .NET 11; Abstractions retain .NET 10 and add .NET 11.
+
 ## [0.2.2] - 2026-11-05
 
 ### Changed
