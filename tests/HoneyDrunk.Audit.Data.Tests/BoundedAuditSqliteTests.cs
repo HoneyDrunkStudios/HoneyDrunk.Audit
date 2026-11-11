@@ -1,3 +1,4 @@
+using System.Globalization;
 using HoneyDrunk.Audit.Abstractions;
 using HoneyDrunk.Audit.Data.Tests.Fixtures;
 using HoneyDrunk.Data.Abstractions.Transactions;
@@ -41,7 +42,7 @@ public sealed class BoundedAuditSqliteTests : IAsyncDisposable
         var rows = newestFirst ? await _query.ReadLatestAsync(filter) : await _query.ReadAsync(filter);
 
         var indexes = newestFirst ? Enumerable.Range(490, 10).Reverse() : Enumerable.Range(0, 10);
-        Assert.Equal(indexes.Select(index => index.ToString("x32")), rows.Select(row => row.Id.Value));
+        Assert.Equal(indexes.Select(index => index.ToString("x32", CultureInfo.InvariantCulture)), rows.Select(row => row.Id.Value));
         Assert.Equal(10, _observer.Materialized);
         var sql = Assert.Single(_observer.Commands);
         Assert.Contains("WHERE", sql, StringComparison.Ordinal);
@@ -55,7 +56,7 @@ public sealed class BoundedAuditSqliteTests : IAsyncDisposable
     {
         await SeedAsync();
         var rows = await _query.ReadLatestAsync(Filter(3) with { Since = Start, Until = Start });
-        Assert.Equal(Enumerable.Range(2, 3).Reverse().Select(index => index.ToString("x32")), rows.Select(row => row.Id.Value));
+        Assert.Equal(Enumerable.Range(2, 3).Reverse().Select(index => index.ToString("x32", CultureInfo.InvariantCulture)), rows.Select(row => row.Id.Value));
         Assert.Equal(3, _observer.Materialized);
         Assert.Single(_observer.Commands);
     }
@@ -74,7 +75,7 @@ public sealed class BoundedAuditSqliteTests : IAsyncDisposable
 
         var rows = await _query.ReadLatestAsync(Filter(10));
 
-        Assert.Equal(9999.ToString("x32"), rows[0].Id.Value);
+        Assert.Equal(9999.ToString("x32", CultureInfo.InvariantCulture), rows[0].Id.Value);
         Assert.Equal(10, rows.Count);
         Assert.Equal(10, _observer.Materialized);
         Assert.Single(_observer.Commands);
@@ -90,7 +91,7 @@ public sealed class BoundedAuditSqliteTests : IAsyncDisposable
         await SeedAsync();
         var rows = await _query.ReadAsync(Filter(limit));
         Assert.Equal(500, rows.Count);
-        Assert.Equal(Enumerable.Range(0, 500).Select(index => index.ToString("x32")), rows.Select(row => row.Id.Value));
+        Assert.Equal(Enumerable.Range(0, 500).Select(index => index.ToString("x32", CultureInfo.InvariantCulture)), rows.Select(row => row.Id.Value));
     }
 
     [Fact]
@@ -116,7 +117,7 @@ public sealed class BoundedAuditSqliteTests : IAsyncDisposable
 
     private static AuditRecord Record(int id, DateTimeOffset occurredAt) => new()
     {
-        Id = id.ToString("x32"),
+        Id = id.ToString("x32", CultureInfo.InvariantCulture),
         OccurredAt = occurredAt,
         Actor = "actor",
         EventName = "event",
