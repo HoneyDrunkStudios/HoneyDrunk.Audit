@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework />
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <PackageId>HoneyDrunk.Audit.Abstractions</PackageId>
     <Description>Pure contracts and abstractions for HoneyDrunk.Audit, the Grid durable audit substrate.</Description>
     <PackageTags>honeydrunk;audit;abstractions;contracts;security;data-change;grid</PackageTags>

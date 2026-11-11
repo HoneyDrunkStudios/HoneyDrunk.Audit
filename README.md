@@ -23,3 +23,7 @@ Phase 1 is append-only by interface: `IAuditLog` exposes only append and no upda
 ## Redaction
 
 Emitters must redact secrets, credentials, tokens, regulated data, and sensitive PII before appending `AuditChange` values. Audit is durable and queryable; it is not a secret store.
+
+## .NET SDK
+
+Build with the .NET 11 SDK pinned in `global.json` (11.0.100, stable patch roll-forward). Runtime and test projects target `net11.0`; Abstractions retain `net10.0` alongside `net11.0` and public contract shapes are unchanged.
