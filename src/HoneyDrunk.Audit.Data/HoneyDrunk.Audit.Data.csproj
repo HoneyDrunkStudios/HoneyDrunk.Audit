@@ -9,7 +9,7 @@
     <ProjectReference Include="..\HoneyDrunk.Audit.Abstractions\HoneyDrunk.Audit.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="HoneyDrunk.Data.Abstractions" Version="0.7.2" />
+    <PackageReference Include="HoneyDrunk.Data.Abstractions" Version="0.8.0" />
     <PackageReference Include="HoneyDrunk.Standards" Version="0.4.4" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>

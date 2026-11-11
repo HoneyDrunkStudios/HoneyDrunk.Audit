@@ -1,4 +1,5 @@
 using HoneyDrunk.Audit.Abstractions;
+using HoneyDrunk.Data.Abstractions.Repositories;
 using HoneyDrunk.Data.Abstractions.Transactions;
 using System.Linq.Expressions;
 
@@ -8,7 +9,7 @@ namespace HoneyDrunk.Audit.Data;
 /// HoneyDrunk.Data-backed forensic audit reader.
 /// </summary>
 /// <param name="unitOfWork">The scoped unit of work used for audit persistence.</param>
-public sealed class DataAuditQuery(IUnitOfWork<IAuditDataContext> unitOfWork) : IAuditQuery
+public sealed class DataAuditQuery(IUnitOfWork<IAuditDataContext> unitOfWork) : IBoundedAuditQuery
 {
     private readonly IUnitOfWork<IAuditDataContext> _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
@@ -17,28 +18,47 @@ public sealed class DataAuditQuery(IUnitOfWork<IAuditDataContext> unitOfWork) : 
         AuditQueryFilter filter,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(filter);
-
-        if (filter.Until < filter.Since)
+        ValidateWindow(filter);
+        if (filter.Limit is > 0)
         {
-            throw new ArgumentException("Until must be greater than or equal to Since.", nameof(filter));
+            return await ReadBoundedAsync(filter, descending: false, cancellationToken).ConfigureAwait(false);
         }
 
+        // Preserve the existing all-results contract only when the caller did not request a positive limit.
         var records = await _unitOfWork.Repository<AuditRecord>().FindAsync(
             BuildFilterExpression(filter),
             cancellationToken).ConfigureAwait(false);
 
-        var ordered = records
-            .OrderBy(record => record.OccurredAt)
-            .ThenBy(record => record.Id)
-            .Select(record => record.ToEntry());
+        return
+        [
+            .. records
+                .OrderBy(record => record.OccurredAt)
+                .ThenBy(record => record.Id)
+                .Select(record => record.ToEntry()),
+        ];
+    }
 
-        if (filter.Limit is > 0)
+    /// <inheritdoc />
+    public Task<IReadOnlyList<AuditEntry>> ReadLatestAsync(
+        AuditQueryFilter filter,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateWindow(filter);
+        if (filter.Limit is null or <= 0)
         {
-            ordered = ordered.Take(filter.Limit.Value);
+            throw new ArgumentException("A positive limit is required for a bounded audit read.", nameof(filter));
         }
 
-        return [.. ordered];
+        return ReadBoundedAsync(filter, descending: true, cancellationToken);
+    }
+
+    private static void ValidateWindow(AuditQueryFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        if (filter.Until < filter.Since)
+        {
+            throw new ArgumentException("Until must be greater than or equal to Since.", nameof(filter));
+        }
     }
 
     private static Expression<Func<AuditRecord, bool>> BuildFilterExpression(AuditQueryFilter filter)
@@ -95,5 +115,27 @@ public sealed class DataAuditQuery(IUnitOfWork<IAuditDataContext> unitOfWork) : 
         var property = Expression.Property(instance, propertyName);
         var constant = Expression.Constant(value, property.Type);
         return And(current, Expression.Equal(property, constant));
+    }
+
+    private async Task<IReadOnlyList<AuditEntry>> ReadBoundedAsync(
+        AuditQueryFilter filter,
+        bool descending,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (_unitOfWork.Repository<AuditRecord>() is not IBoundedReadOnlyRepository<AuditRecord> repository)
+        {
+            throw new NotSupportedException("The audit repository must support source-bounded ordered reads.");
+        }
+
+        var records = await repository.FindOrderedAsync(
+            BuildFilterExpression(filter),
+            record => record.OccurredAt,
+            record => record.Id,
+            filter.Limit!.Value,
+            descending,
+            cancellationToken).ConfigureAwait(false);
+
+        return [.. records.Select(record => record.ToEntry())];
     }
 }

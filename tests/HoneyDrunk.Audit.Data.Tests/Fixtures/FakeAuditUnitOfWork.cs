@@ -42,7 +42,7 @@ internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.IA
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
-    private sealed class FakeAuditRecordRepository : IRepository<HoneyDrunk.Audit.Data.AuditRecord>
+    private sealed class FakeAuditRecordRepository : IRepository<HoneyDrunk.Audit.Data.AuditRecord>, IBoundedReadOnlyRepository<HoneyDrunk.Audit.Data.AuditRecord>
     {
         private readonly List<HoneyDrunk.Audit.Data.AuditRecord> _records = [];
 
@@ -75,6 +75,23 @@ internal sealed class FakeAuditUnitOfWork : IUnitOfWork<HoneyDrunk.Audit.Data.IA
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult<IReadOnlyList<HoneyDrunk.Audit.Data.AuditRecord>>(
                 [.. _records.Where(predicate.Compile())]);
+        }
+
+        public Task<IReadOnlyList<HoneyDrunk.Audit.Data.AuditRecord>> FindOrderedAsync<TOrderKey, TTieBreaker>(
+            Expression<Func<HoneyDrunk.Audit.Data.AuditRecord, bool>> predicate,
+            Expression<Func<HoneyDrunk.Audit.Data.AuditRecord, TOrderKey>> orderBy,
+            Expression<Func<HoneyDrunk.Audit.Data.AuditRecord, TTieBreaker>> tieBreaker,
+            int limit,
+            bool descending = false,
+            CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(limit);
+            var matches = _records.Where(predicate.Compile());
+            var ordered = descending
+                ? matches.OrderByDescending(orderBy.Compile()).ThenByDescending(tieBreaker.Compile())
+                : matches.OrderBy(orderBy.Compile()).ThenBy(tieBreaker.Compile());
+            return Task.FromResult<IReadOnlyList<HoneyDrunk.Audit.Data.AuditRecord>>([.. ordered.Take(limit)]);
         }
 
         public Task<HoneyDrunk.Audit.Data.AuditRecord?> FindOneAsync(
