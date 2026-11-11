@@ -20,7 +20,8 @@ public sealed class BoundedAuditContractTests
         var filter = new AuditQueryFilter(DateTimeOffset.MinValue, DateTimeOffset.MaxValue, Limit: 50);
 
         await Assert.ThrowsAsync<NotSupportedException>(() => newestFirst
-            ? query.ReadLatestAsync(filter) : query.ReadAsync(filter));
+            ? query.ReadLatestAsync(filter)
+            : query.ReadAsync(filter));
 
         Assert.Empty(repository.ReceivedCalls());
     }

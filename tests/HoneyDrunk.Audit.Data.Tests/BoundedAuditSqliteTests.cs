@@ -116,16 +116,23 @@ public sealed class BoundedAuditSqliteTests : IAsyncDisposable
 
     private static AuditRecord Record(int id, DateTimeOffset occurredAt) => new()
     {
-        Id = id.ToString("x32"), OccurredAt = occurredAt, Actor = "actor", EventName = "event",
-        Category = AuditCategory.Security, Outcome = AuditOutcome.Succeeded, TargetType = "agent",
-        TargetId = "a", CorrelationId = "correlation", TenantId = TenantId.Internal.ToString(),
+        Id = id.ToString("x32"),
+        OccurredAt = occurredAt,
+        Actor = "actor",
+        EventName = "event",
+        Category = AuditCategory.Security,
+        Outcome = AuditOutcome.Succeeded,
+        TargetType = "agent",
+        TargetId = "a",
+        CorrelationId = "correlation",
+        TenantId = TenantId.Internal.ToString(),
     };
 
     private async Task SeedAsync()
     {
         for (var index = 499; index >= 0; index--)
         {
-            _context.Add(Record(index, Start.AddMinutes(index / 5)));
+            _context.Add(Record(index, Start.AddMinutes(Math.Floor(index / 5.0))));
         }
 
         // Every filter must reach the database, otherwise these newer/tied records displace matches.
