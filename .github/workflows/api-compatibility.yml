@@ -14,8 +14,8 @@ permissions:
 
 jobs:
   api-compatibility:
-    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-api-compatibility.yml@main
+    uses: HoneyDrunkStudios/HoneyDrunk.Actions/.github/workflows/job-api-compatibility.yml@de51d34c6f2f6db2346275b6582c8863521a68ed
     with:
       dotnet-version: '11.0.100'
       project-path: './src/HoneyDrunk.Audit.Abstractions/HoneyDrunk.Audit.Abstractions.csproj'
-      actions-ref: 'main'
+      actions-ref: 'de51d34c6f2f6db2346275b6582c8863521a68ed'
